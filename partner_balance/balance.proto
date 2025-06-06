@@ -2,7 +2,7 @@ syntax = "proto3";
 package gateway;
 option go_package = "/gateway;gateway";
 
-// получение статы
+// получение статистики
 service StatService {
   rpc Stat(StatRequest) returns (StatReply);
 }

@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  balance:
+    image: balance:3.0
+    container_name: balance
+    env_file:
+      - ./config/.env
+    networks:
+      - local_network
+    expose:
+      - "50051"
+    volumes:
+      - ./config/.env:/app/.env:ro
+      - ./config/config.yaml:/app/config.yaml:ro
+      - ./logs:/app/logs
+    restart: unless-stopped
+networks:
+  local_network:
+    external: true

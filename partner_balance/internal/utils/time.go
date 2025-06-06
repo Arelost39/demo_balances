@@ -9,10 +9,10 @@ var LocalLocation *time.Location
 
 // InitLocation загружает нужную локацию и сохраняет её в глобальной переменной.
 func InitLocation() {
-	// Используем "Europe/Athens" вместо "Etc/GMT-2"
-	loc, err := time.LoadLocation("Europe/Athens")
+	// Используем "Europe/Kaliningrad"
+	loc, err := time.LoadLocation("Europe/Kaliningrad")
 	if err != nil {
-		log.Printf("Ошибка загрузки локации 'Europe/Athens': %v. Используется UTC.", err)
+		log.Printf("Ошибка загрузки локации 'Europe/Kaliningrad': %v. Используется UTC.", err)
 		LocalLocation = time.UTC
 	} else {
 		LocalLocation = loc

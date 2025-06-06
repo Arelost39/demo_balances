@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"tg_router/gateway"
 	"tg_router/logger"
 	"tg_router/types"
@@ -28,7 +27,7 @@ func NewTelegramBot(apiToken string, threads types.Config, statClient gateway.St
 	if err != nil {
 		return nil, fmt.Errorf("ошибка инициализации Telegram бота: %v", err)
 	}
-	logger.Log.Infof("Telegram бот успешно инициализирован: %s", bot.Self.UserName)
+	logger.Log.Infof("[TelegramBot] Telegram бот успешно инициализирован: %s", bot.Self.UserName)
 	return &TelegramBot{
 		Bot:        bot,
 		Threads:    threads,
@@ -37,7 +36,7 @@ func NewTelegramBot(apiToken string, threads types.Config, statClient gateway.St
 	}, nil
 }
 
-// Запуск прослушивания обновлений
+// StartListening запускает прослушивание обновлений Telegram бота.
 func (t *TelegramBot) StartListening(ctx context.Context, botName string) {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -92,11 +91,11 @@ func (t *TelegramBot) handleUpdate(ctx context.Context, update tgbotapi.Update, 
 			}
 			resp, err := t.StatClient.Stat(ctx, req)
 			if err != nil {
-				logger.Log.Errorf("Ошибка при получении статистики: %v", err)
+				logger.Log.Errorf("[%s] Ошибка при получении статистики: %v", botName, err)
 				return
 			}
 			if err := t.SendMessage(chatID, thread.ThreadID, resp.Text); err != nil {
-				logger.Log.Errorf("Ошибка отправки ответа: %v", err)
+				logger.Log.Errorf("[%s] Ошибка отправки ответа: %v", botName, err)
 			}
 		}()
 	default:
@@ -105,21 +104,24 @@ func (t *TelegramBot) handleUpdate(ctx context.Context, update tgbotapi.Update, 
 	}
 }
 
-// Функция отправки сообщения в телегу
-func (t *TelegramBot) SendMessage(chatid int64, threadid int64, msgText string) error {
+// SendMessage отправляет сообщение в телегу.
+func (t *TelegramBot) SendMessage(chatID int64, threadID int64, msgText string) error {
 
-	if strings.TrimSpace(msgText) == "" {
-		logger.Log.Infof("SendMessageThread: пустое сообщение, отправка пропущена")
+	if len(bytes.TrimSpace([]byte(msgText))) == 0 {
+		logger.Log.Infof("[TelegramBot] SendMessage: пустое сообщение, отправка пропущена")
 		return nil
 	}
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", t.APIToken)
 	payload := map[string]interface{}{
-		"chat_id":           chatid,
-		"message_thread_id": threadid,
+		"chat_id":           chatID,
+		"message_thread_id": threadID,
 		"text":              msgText,
 		"parse_mode":        "HTML",
 	}
-	data, _ := json.Marshal(payload)
+	data, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("ошибка сериализации JSON: %v", err)
+	}
 	resp, err := http.Post(url, "application/json", bytes.NewReader(data))
 	if err != nil {
 		return fmt.Errorf("ошибка отправки сообщения: %v", err)

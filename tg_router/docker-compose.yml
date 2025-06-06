@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  tg_router:
+    image: tg_router:1.0
+    container_name: tg_router
+    volumes:
+      - ./threads.yaml:/app/threads.yaml:ro
+    env_file:
+      - ./.env
+    networks:
+      - local_network
+    expose:
+      - "50051"
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Kaliningrad
+networks:
+  local_network:
+    external: true

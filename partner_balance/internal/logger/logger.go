@@ -15,13 +15,13 @@ var Log = logrus.New()
 // Логи уровней Info, Debug и Warn будут писаться в один файл (info.log),
 // а логи уровней Error, Fatal и Panic – в другой (error.log).
 func InitLogger() {
-	// Устанавливаем формат с полными таймстампами
+
 	Log.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
-	// Устанавливаем глобальный уровень логирования
+
 	Log.SetLevel(logrus.DebugLevel)
-	// Вывод логов в консоль (stdout)
+
 	Log.SetOutput(os.Stdout)
 
 	// Создаем ротацию для логов информационных уровней

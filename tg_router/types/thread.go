@@ -1,6 +1,6 @@
 package types
 
-// Thread представляет тред в Telegram
+// Конфигурациии чатов для бота
 type Thread struct {
 	Network     	string	`yaml:"network"`
 	Description 	string	`yaml:"description"`
@@ -8,7 +8,7 @@ type Thread struct {
 	ThreadID    	int64  	`yaml:"thread_id"`
 }
 
-// Config содержит конфигурацию тредов
+// массив конфигураций
 type Config struct {
 	Threads 	[]Thread	`yaml:"threads"`
 }

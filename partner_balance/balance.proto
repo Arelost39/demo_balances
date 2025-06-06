@@ -1,0 +1,18 @@
+syntax = "proto3";
+package gateway;
+option go_package = "/gateway;gateway";
+
+// получение статы
+service StatService {
+  rpc Stat(StatRequest) returns (StatReply);
+}
+
+// Запрос статуса/статистики
+message StatRequest {
+  string network = 1;
+  string user = 2;
+}
+message StatReply {
+  string text = 1;
+  string network = 2;
+}

@@ -1,0 +1,31 @@
+FROM golang:1.24-alpine AS builder
+
+RUN apk add --no-cache tzdata git
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o partner_balance ./cmd/main.go
+
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates sqlite tzdata
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app
+
+COPY --from=builder /app/partner_balance .
+
+RUN chown appuser:appgroup partner_balance
+
+EXPOSE 50051
+
+USER appuser
+
+CMD ["./partner_balance"]

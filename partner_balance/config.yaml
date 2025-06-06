@@ -1,0 +1,20 @@
+networks:
+  AdMoney:
+    Partner1:
+      token: "4444433332222bbbbbbttttccccchhhhh"
+      description: "Partner1"
+      is_active: true
+    Partner2:
+      token: "1112222333ffffrrrrtttt"
+      description: "Partner2"
+      is_active: true
+    Partner3:
+      token: "555666777sssssshhhhhhttttttt"
+      description: "Partner2"
+      is_active: false
+  CashRain:
+    Partner1:
+      token: "888999000ssssssshhhhlllll"
+      description: "Partner2"
+      is_active: true
+
